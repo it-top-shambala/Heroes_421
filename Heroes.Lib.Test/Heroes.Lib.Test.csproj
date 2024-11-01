@@ -24,4 +24,10 @@
       <ProjectReference Include="..\Heroes.Lib\Heroes.Lib.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="heroes_config_test.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
