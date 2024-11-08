@@ -37,6 +37,11 @@ public partial class HeroesConfig
 
 
     /// <summary>
+    /// Логгер
+    /// </summary>
+    public static Logger? Logger { get; set; }
+
+    /// <summary>
     /// Загрузить конфигурацию героев
     /// </summary>
     /// <param name="path">Путь к файлу конфигурации</param>
@@ -45,25 +50,40 @@ public partial class HeroesConfig
     /// <exception cref="DeserializeException">Проблемы с десериализацией</exception>
     public static HeroesConfig? Load(string path = "heroes_config.json")
     {
+        /*if (Logger is not null)
+        {
+            Logger($"$Загрузка конфигурации героев из файла {path}");
+            //Logger.Invoke($"$Загрузка конфигурации героев из файла {path}");
+        }*/
+        Logger?.Invoke($"[INFO] ({DateTime.Now:g}) Загрузка конфигурации героев из файла {path}");
+
+
+        // Чтение файла (выбросить исключение, если не удалось)
         string GetJson(string path)
         {
+            Logger?.Invoke($"[INFO] ({DateTime.Now:g}) Загрузка файла {path}");
+
             if (!File.Exists(path))
             {
+                Logger?.Invoke($"[ERROR] ({DateTime.Now:g}) Файл {path} не найден");
                 throw new FileException(null);
             }
 
             string? json = null;
             try
             {
+                Logger?.Invoke($"[INFO] ({DateTime.Now:g}) Чтение файла {path}");
                 json = File.ReadAllText(path);
             }
             catch (Exception e)
             {
+                Logger?.Invoke($"[ERROR] ({DateTime.Now:g}) Проблемы с чтением файла {path}");
                 throw new FileException(e);
             }
 
             if (json.Length == 0)
             {
+                Logger?.Invoke($"[ERROR] ({DateTime.Now:g} Файл {path} пуст");
                 throw new FileException(null);
             }
 
@@ -73,10 +93,12 @@ public partial class HeroesConfig
         var json = GetJson(path);
         try
         {
+            Logger?.Invoke($"[INFO] ({DateTime.Now:g}) Десериализация конфигурации героев");
             return JsonSerializer.Deserialize<HeroesConfig>(json);
         }
         catch (Exception e)
         {
+            Logger?.Invoke($"[ERROR] ({DateTime.Now:g}) Проблемы с десериализацией конфигурации героев");
             throw new DeserializeException(e);
         }
     }
