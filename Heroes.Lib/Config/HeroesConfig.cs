@@ -42,75 +42,39 @@ public partial class HeroesConfig
     /// <returns>Конфигурация героев</returns>
     public static HeroesConfig? Load(string path = "heroes_config.json")
     {
-        /*try
+        string GetJson(string path)
         {
-            var json = File.ReadAllText(path);
-            return JsonSerializer.Deserialize<HeroesConfig>(json);
-        }
-        catch (ArgumentException exception)
-        {
-            throw new FileException(exception);
-        }
-        catch (DirectoryNotFoundException exception)
-        {
-            throw new FileException(exception);
-        }
-        catch (FileNotFoundException exception)
-        {
-            throw new FileException(exception);
-        }
-        catch (JsonException exception)
-        {
-            throw new DeserializeException(exception);
-        }
-        catch (NotSupportedException exception)
-        {
-            throw new DeserializeException(exception);
-        }
-        catch (Exception exception)
-        {
-            throw new Exception(exception.Message);
-        }*/
+            if (!File.Exists(path))
+            {
+                throw new FileException(null);
+            }
 
-        if (!File.Exists(path))
-        {
-            throw new FileException(null);
+            string? json = null;
+            try
+            {
+                json = File.ReadAllText(path);
+            }
+            catch (Exception e)
+            {
+                throw new FileException(e);
+            }
+
+            if (json.Length == 0)
+            {
+                throw new FileException(null);
+            }
+
+            return json;
         }
 
-        string? json = null;
-        try
-        {
-            json = File.ReadAllText(path);
-        }
-        catch (IOException e)
-        {
-            throw new FileException(e);
-        }
-        catch (UnauthorizedAccessException e)
-        {
-            throw new FileException(e);
-        }
-
-        if (json.Length == 0)
-        {
-            throw new FileException(null);
-        }
-
+        var json = GetJson(path);
         try
         {
             return JsonSerializer.Deserialize<HeroesConfig>(json);
-        }
-        catch (JsonException e)
-        {
-            throw new DeserializeException(e);
-        }
-        catch (NotSupportedException e)
-        {
-            throw new DeserializeException(e);
         }
         catch (Exception e)
         {
-            throw new Exception(e.Message);
+            throw new DeserializeException(e);
         }
     }
 }
