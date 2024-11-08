@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.Json;
 
 namespace Heroes.Lib.Config;
@@ -41,7 +42,75 @@ public partial class HeroesConfig
     /// <returns>Конфигурация героев</returns>
     public static HeroesConfig? Load(string path = "heroes_config.json")
     {
-        var json = File.ReadAllText(path);
-        return JsonSerializer.Deserialize<HeroesConfig>(json);
+        /*try
+        {
+            var json = File.ReadAllText(path);
+            return JsonSerializer.Deserialize<HeroesConfig>(json);
+        }
+        catch (ArgumentException exception)
+        {
+            throw new FileException(exception);
+        }
+        catch (DirectoryNotFoundException exception)
+        {
+            throw new FileException(exception);
+        }
+        catch (FileNotFoundException exception)
+        {
+            throw new FileException(exception);
+        }
+        catch (JsonException exception)
+        {
+            throw new DeserializeException(exception);
+        }
+        catch (NotSupportedException exception)
+        {
+            throw new DeserializeException(exception);
+        }
+        catch (Exception exception)
+        {
+            throw new Exception(exception.Message);
+        }*/
+
+        if (!File.Exists(path))
+        {
+            throw new FileException(null);
+        }
+
+        string? json = null;
+        try
+        {
+            json = File.ReadAllText(path);
+        }
+        catch (IOException e)
+        {
+            throw new FileException(e);
+        }
+        catch (UnauthorizedAccessException e)
+        {
+            throw new FileException(e);
+        }
+
+        if (json.Length == 0)
+        {
+            throw new FileException(null);
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<HeroesConfig>(json);
+        }
+        catch (JsonException e)
+        {
+            throw new DeserializeException(e);
+        }
+        catch (NotSupportedException e)
+        {
+            throw new DeserializeException(e);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
     }
 }
