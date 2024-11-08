@@ -35,11 +35,14 @@ public partial class HeroesConfig
     /// </summary>
     public ConfigItem? Mage { get; set; }
 
+
     /// <summary>
     /// Загрузить конфигурацию героев
     /// </summary>
     /// <param name="path">Путь к файлу конфигурации</param>
     /// <returns>Конфигурация героев</returns>
+    /// <exception cref="FileException">Проблемы с чтением файла</exception>
+    /// <exception cref="DeserializeException">Проблемы с десериализацией</exception>
     public static HeroesConfig? Load(string path = "heroes_config.json")
     {
         string GetJson(string path)
